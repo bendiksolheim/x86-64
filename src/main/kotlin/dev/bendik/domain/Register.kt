@@ -40,7 +40,7 @@ enum class Register {
     companion object {
         fun isRegister(register: String): Boolean =
             try {
-                Register.valueOf(register)
+                valueOf(register)
                 true
             } catch (e: Exception) {
                 false
