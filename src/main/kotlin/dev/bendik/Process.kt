@@ -32,3 +32,9 @@ data class Process(val registers: Map<Register, Long>,
         return result
     }
 }
+
+fun createProcess(program: Pair<Map<String, Int>, List<Instruction>>): Process {
+    val registers: Map<Register, Long> = Register.values().associate { Pair(it, 0L) }
+    val memory = ByteArray(1000)
+    return Process(registers, memory, program.second, program.first)
+}
