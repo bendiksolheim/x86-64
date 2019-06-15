@@ -4,10 +4,10 @@ import dev.bendik.domain.Instruction
 import dev.bendik.domain.ParseResult
 import dev.bendik.domain.Register
 
-data class Process(val registers: Map<Register, Long>,
+data class Process(val registers: MutableMap<Register, Long>,
                    val memory: ByteArray,
                    val instructions: List<Instruction>,
-                   val labels: Map<String, Int>) {
+                   val labels: Map<String, Long>) {
 
     // Generated
     override fun equals(other: Any?): Boolean {

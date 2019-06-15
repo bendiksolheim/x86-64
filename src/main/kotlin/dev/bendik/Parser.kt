@@ -3,11 +3,11 @@ package dev.bendik
 import dev.bendik.domain.*
 
 fun parse(program: List<String>): ParseResult {
-    val labels = mutableMapOf<String, Int>()
+    val labels = mutableMapOf<String, Long>()
     val instructions = mutableListOf<Instruction>()
     for (line in program) {
         if (line.contains(':')) {
-            labels[line.split(':')[0]] = instructions.count()
+            labels[line.split(':')[0]] = instructions.count().toLong()
         } else {
             val l = line.toUpperCase()
             val operator = l.split("""\s""".toRegex())[0]
