@@ -35,9 +35,14 @@ data class Process(val registers: MutableMap<Register, Long>,
 }
 
 fun createProcess(program: ParseResult): Process {
-    val registers: Map<Register, Long> = Register.values().associate { Pair(it, 0L) }
+    val registers = Register.values().associate { Pair(it, 0L) }.toMutableMap()
     val memory = ByteArray(1000)
-    return Process(registers, memory, program.instructions, program.labels)
+    val process = Process(registers, memory, program.instructions, program.labels)
+    process.registers[Register.RIP] = process.labels["_main"]!!
+    process.registers[Register.RSP] = memory.count().toLong() - 8
+    writeMemory(process, registers[Register.RSP]!!, registers[Register.RSP]!!, 8)
+
+    return process
 }
 
 fun writeMemory(process: Process, address: Long, value: Long, size: Int) {
