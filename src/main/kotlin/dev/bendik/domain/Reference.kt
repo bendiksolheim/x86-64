@@ -12,9 +12,7 @@ fun parseReference(ref: String): Reference =
         Register.isRegister(ref) -> RegisterRef(Register.valueOf(ref))
         ref.contains("QWORD") -> {
             val result = """QWORD PTR \[([A-Z]+) - ([0-9]+)]""".toRegex().matchEntire(ref)
-            if (result == null) {
-                throw RuntimeException("Unkown reference [$ref]")
-            }
+                ?: throw RuntimeException("Unknown reference [$ref]")
             val (register, offset) = result.destructured
             MemoryRef(Register.valueOf(register), offset.toInt())
         }
