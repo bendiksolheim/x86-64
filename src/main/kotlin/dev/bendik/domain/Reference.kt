@@ -5,7 +5,7 @@ import java.lang.RuntimeException
 sealed class Reference
 data class RegisterRef(val register: Register) : Reference()
 data class MemoryRef(val register: Register, val offset: Int): Reference()
-data class Literal(val number: Int): Reference()
+data class Literal(val number: Long): Reference()
 
 fun parseReference(ref: String): Reference =
     when {
@@ -16,5 +16,5 @@ fun parseReference(ref: String): Reference =
             val (register, offset) = result.destructured
             MemoryRef(Register.valueOf(register), offset.toInt())
         }
-        else -> Literal(ref.toInt())
+        else -> Literal(ref.toLong())
     }
