@@ -13,11 +13,11 @@ fun main(args: Array<String>) {
         val pipeline = ::getSource pipe
                 ::preprocess pipe
                 ::parse pipe
-                ::createProcess
+                ::createProcess pipe
+                ::interpret
 
-        val process = pipeline(args[0])
-        println(process.labels)
-        println(process.instructions)
+        val result = pipeline(args[0])
+        println(result)
     }
 }
 
