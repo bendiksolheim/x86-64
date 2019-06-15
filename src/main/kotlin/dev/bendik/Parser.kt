@@ -2,7 +2,7 @@ package dev.bendik
 
 import dev.bendik.domain.*
 
-fun parse(program: List<String>): Pair<Map<String, Int>, List<Instruction>> {
+fun parse(program: List<String>): ParseResult {
     val labels = mutableMapOf<String, Int>()
     val instructions = mutableListOf<Instruction>()
     for (line in program) {
@@ -16,7 +16,7 @@ fun parse(program: List<String>): Pair<Map<String, Int>, List<Instruction>> {
         }
     }
 
-    return Pair(labels, instructions)
+    return ParseResult(labels, instructions)
 }
 
 fun parseInstruction(operator: String, operands: List<String>): Instruction =
