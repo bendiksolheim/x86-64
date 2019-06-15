@@ -39,7 +39,7 @@ fun createProcess(program: ParseResult): Process {
     val memory = ByteArray(1000)
     val process = Process(registers, memory, program.instructions, program.labels)
     process.registers[Register.RIP] = process.labels["_main"]!!
-    process.registers[Register.RSP] = memory.count().toLong() - 8
+    process.registers[Register.RSP] = memory.count().toLong() - 8 - 1
     writeMemory(process, registers[Register.RSP]!!, registers[Register.RSP]!!, 8)
 
     return process
