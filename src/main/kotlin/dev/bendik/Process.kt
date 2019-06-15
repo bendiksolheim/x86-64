@@ -38,3 +38,38 @@ fun createProcess(program: Pair<Map<String, Int>, List<Instruction>>): Process {
     val memory = ByteArray(1000)
     return Process(registers, memory, program.second, program.first)
 }
+
+fun writeMemory(process: Process, address: Long, value: Long, size: Int) {
+    val ad = address.toInt()
+    val bytes = longToBytes(value)
+    for (i in 0 until size) {
+        process.memory[ad + i] = bytes[i]
+    }
+}
+
+fun readMemory(process: Process, address: Long, size: Int): Long {
+    val ad = address.toInt()
+    val bytes = process.memory.slice(ad..(ad + size))
+    return bytesToLong(bytes.toByteArray())
+}
+
+private fun longToBytes(value: Long): ByteArray {
+    var v = value
+    val result = ByteArray(8)
+    for(i in 0 until 8) {
+        result[7 - i] = (v and 0xFF).toByte()
+        v = v shr 8
+    }
+
+    return result
+}
+
+private fun bytesToLong(value: ByteArray): Long {
+    var result = 0L
+    for (i in 0 until 8) {
+        result = result shl 8
+        result = result or (value[i].toLong() and 0xFF)
+    }
+
+    return result
+}
