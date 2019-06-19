@@ -2,14 +2,13 @@ package dev.bendik
 
 import dev.bendik.domain.Instruction
 import dev.bendik.domain.ParseResult
-import dev.bendik.domain.Register
+import dev.bendik.domain.Registers
 
-data class Process(val registers: MutableMap<Register, Long>,
+data class Process(val registers: Registers,
                    val memory: ByteArray,
                    val instructions: List<Instruction>,
                    val labels: Map<String, Long>) {
-
-    // Generated
+    //Generated
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -24,7 +23,6 @@ data class Process(val registers: MutableMap<Register, Long>,
         return true
     }
 
-    // Generated
     override fun hashCode(): Int {
         var result = registers.hashCode()
         result = 31 * result + memory.contentHashCode()
@@ -32,25 +30,29 @@ data class Process(val registers: MutableMap<Register, Long>,
         result = 31 * result + labels.hashCode()
         return result
     }
+
 }
 
 fun createProcess(program: ParseResult): Process {
-    val registers = Register.values().associate { Pair(it, 0L) }.toMutableMap()
     val memory = ByteArray(1000)
+    val registers = Registers(
+        RIP = program.labels["_main"]!!,
+        RSP = memory.count().toLong() - 8 - 1
+    )
     val process = Process(registers, memory, program.instructions, program.labels)
-    process.registers[Register.RIP] = process.labels["_main"]!!
-    process.registers[Register.RSP] = memory.count().toLong() - 8 - 1
-    writeMemory(process, registers[Register.RSP]!!, registers[Register.RSP]!!, 8)
+    writeMemory(process, registers.RSP, registers.RSP, 8)
 
     return process
 }
 
-fun writeMemory(process: Process, address: Long, value: Long, size: Int) {
+fun writeMemory(process: Process, address: Long, value: Long, size: Int): Process {
     val ad = address.toInt()
     val bytes = longToBytes(value)
     for (i in 0 until size) {
         process.memory[ad + i] = bytes[i]
     }
+
+    return process
 }
 
 fun readMemory(process: Process, address: Long, size: Int): Long {
