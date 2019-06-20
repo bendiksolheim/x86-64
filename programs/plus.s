@@ -13,10 +13,12 @@ _main:                                  ## @main
 	.cfi_def_cfa_register rbp
 	mov	qword ptr [rbp - 8], 5
 	mov	qword ptr [rbp - 16], 6
+	mov	qword ptr [rbp - 24], 1
 	mov	rax, qword ptr [rbp - 8]
 	add	rax, qword ptr [rbp - 16]
-	mov	qword ptr [rbp - 24], rax
-	mov	rax, qword ptr [rbp - 24]
+	sub	rax, qword ptr [rbp - 24]
+	mov	qword ptr [rbp - 32], rax
+	mov	rax, qword ptr [rbp - 32]
 	pop	rbp
 	ret
 	.cfi_endproc
