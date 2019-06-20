@@ -1,5 +1,6 @@
 package dev.bendik.domain
 
+import arrow.syntax.function.memoize
 import java.lang.RuntimeException
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.instanceParameter
@@ -31,33 +32,34 @@ fun parseReference(ref: String): Reference =
  * lens.set(registers, newValue)
  * lens.modify(registers) { it + newValue }
  */
-fun getRegisterLens(register: String): RegisterLens = RegisterLens(
-        { registers -> getRegister(registers, register).get(registers)},
-        { registers, newValue ->
-            val copy = registers::class.memberFunctions.first { it.name == "copy"}
-            val instanceParam = copy.instanceParameter!!
-            val regParam = copy.parameters.first { it.name == register}
-            copy.callBy(mapOf(instanceParam to registers, regParam to newValue)) as Registers
-        },
-        { registers, updateFn ->
-            val reg = getRegister(registers, register)
-            val oldValue = reg.get(registers)
-            val newValue = updateFn(oldValue)
-            val copy = registers::class.memberFunctions.first { it.name == "copy"}
-            val instanceParam = copy.instanceParameter!!
-            val regParam = copy.parameters.first { it.name == register}
-            copy.callBy(mapOf(instanceParam to registers, regParam to newValue)) as Registers
-        }
-    )
+val getRegisterLens: (register: String) -> RegisterLens = { register: String ->
+        val reg = findRegister(register)
+        val regParam = copy.parameters.first { it.name == register }
+
+        RegisterLens(
+            { registers -> reg.get(registers) },
+            { registers, newValue ->
+                copy.callBy(mapOf(instanceParam to registers, regParam to newValue)) as Registers
+            },
+            { registers, updateFn ->
+                val oldValue = reg.get(registers)
+                val newValue = updateFn(oldValue)
+                copy.callBy(mapOf(instanceParam to registers, regParam to newValue)) as Registers
+            }
+        )
+    }.memoize()
+
+
+private val copy = Registers::class.memberFunctions.first { it.name == "copy" }
+private val instanceParam = copy.instanceParameter!!
 
 @Suppress("UNCHECKED_CAST")
-fun getRegister(registers: Registers, register: String): KProperty1<Registers, Long> {
-    return registers::class.memberProperties
-        .first { it.name == register } as KProperty1<Registers, Long>
-}
+private fun findRegister(register: String): KProperty1<Registers, Long> =
+        Registers::class.memberProperties
+            .first { it.name == register } as KProperty1<Registers, Long>
 
 class RegisterLens (
     val get: (Registers) -> Long,
     val set: (Registers, Long) -> Registers,
     val modify: (Registers, (Long) -> Long) -> Registers
-)
+    )
