@@ -19,15 +19,15 @@ fun interpret(process: Process): Long {
     }
 }
 
-fun mov(mov: Mov, process: Process): Process{
+fun mov(mov: Mov, process: Process): Process {
     val lhs = mov.lhs
     val rhs = mov.rhs
-    val updatedProcess: Process = when (lhs) {
+    val updated: Process = when (lhs) {
         is RegisterRef -> process.copy(registers = lhs.register.set(process.registers, interpretValue(process, rhs)))
         is MemoryRef -> writeMemory(process, lhs.register.get(process.registers) - lhs.offset, interpretValue(process, rhs), 8)
         is Literal -> process //ignore?
     }
-    return updatedProcess.copy(registers = updatedProcess.registers.copy(RIP = updatedProcess.registers.RIP + 1))
+    return updated.copy(registers = updated.registers.copy(RIP = updated.registers.RIP + 1))
 }
 
 fun add(add: Add, process: Process): Process {
