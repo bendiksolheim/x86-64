@@ -29,6 +29,10 @@ fun parseInstruction(operator: String, operands: List<String>): Instruction =
             getRegisterLens(operands[0]),
             parseReference(operands[1])
         )
+        "SUB" -> Sub(
+            getRegisterLens(operands[0]),
+            parseReference(operands[1])
+        )
         "PUSH" -> Push(getRegisterLens(operands[0]))
         "POP" -> Pop(getRegisterLens(operands[0]))
         "CALL" -> Call(operands[0])

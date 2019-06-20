@@ -9,6 +9,7 @@ fun interpret(process: Process): Long {
         val nextProcess = when (val instruction = process.instructions[process.registers.RIP.toInt()]) {
             is Mov -> mov(instruction, process)
             is Add -> add(instruction, process)
+            is Sub -> sub(instruction, process)
             is Call -> call(instruction, process)
             is Ret -> ret(process)
             is Push -> push(instruction, process)
@@ -34,6 +35,13 @@ fun add(add: Add, process: Process): Process {
     val lhs = add.lhs
     val rhs = add.rhs
     val updated = lhs.modify(process.registers) { it + interpretValue(process, rhs)}
+    return process.copy(registers = updated.copy(RIP = updated.RIP + 1))
+}
+
+fun sub(sub: Sub, process: Process): Process {
+    val lhs = sub.lhs
+    val rhs = sub.rhs
+    val updated = lhs.modify(process.registers) { it - interpretValue(process, rhs) }
     return process.copy(registers = updated.copy(RIP = updated.RIP + 1))
 }
 
