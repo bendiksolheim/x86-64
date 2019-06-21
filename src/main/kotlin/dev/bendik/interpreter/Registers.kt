@@ -1,4 +1,4 @@
-package dev.bendik.domain
+package dev.bendik.interpreter
 
 import arrow.syntax.function.memoize
 import kotlin.reflect.KProperty1

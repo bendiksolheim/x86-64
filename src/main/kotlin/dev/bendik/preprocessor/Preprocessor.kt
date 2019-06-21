@@ -1,7 +1,7 @@
-package dev.bendik.domain
+package dev.bendik.preprocessor
 
-import dev.bendik.compose
-import dev.bendik.or
+import arrow.core.compose
+import dev.bendik.util.or
 import kotlin.reflect.KProperty0
 
 fun isDirective(s: String) = s.startsWith('.')

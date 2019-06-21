@@ -1,4 +1,8 @@
-package dev.bendik.domain
+package dev.bendik.parser
+
+import dev.bendik.interpreter.RegisterLens
+import dev.bendik.interpreter.getRegisterLens
+import dev.bendik.interpreter.isRegister
 
 sealed class Reference
 data class RegisterRef(val register: RegisterLens) : Reference()

@@ -1,6 +1,6 @@
-package dev.bendik
+package dev.bendik.interpreter
 
-import dev.bendik.domain.*
+import dev.bendik.parser.*
 
 fun interpret(process: Process): Long {
     return if (isDone(process)) {
@@ -24,8 +24,15 @@ fun mov(mov: Mov, process: Process): Process {
     val lhs = mov.lhs
     val rhs = mov.rhs
     val updated: Process = when (lhs) {
-        is RegisterRef -> process.copy(registers = lhs.register.set(process.registers, interpretValue(process, rhs)))
-        is MemoryRef -> writeMemory(process, lhs.register.get(process.registers) - lhs.offset, interpretValue(process, rhs), 8)
+        is RegisterRef -> process.copy(registers = lhs.register.set(process.registers,
+            interpretValue(process, rhs)
+        ))
+        is MemoryRef -> writeMemory(
+            process,
+            lhs.register.get(process.registers) - lhs.offset,
+            interpretValue(process, rhs),
+            8
+        )
         is Literal -> process //ignore?
     }
     return updated.copy(registers = updated.registers.copy(RIP = updated.registers.RIP + 1))
@@ -34,7 +41,7 @@ fun mov(mov: Mov, process: Process): Process {
 fun add(add: Add, process: Process): Process {
     val lhs = add.lhs
     val rhs = add.rhs
-    val updated = lhs.modify(process.registers) { it + interpretValue(process, rhs)}
+    val updated = lhs.modify(process.registers) { it + interpretValue(process, rhs) }
     return process.copy(registers = updated.copy(RIP = updated.RIP + 1))
 }
 
@@ -75,7 +82,11 @@ fun interpretValue(process: Process, value: Reference): Long =
     when (value) {
         is RegisterRef -> value.register.get(process.registers)
         is Literal -> value.number
-        is MemoryRef -> readMemory(process, value.register.get(process.registers) - value.offset, 8)
+        is MemoryRef -> readMemory(
+            process,
+            value.register.get(process.registers) - value.offset,
+            8
+        )
     }
 
 

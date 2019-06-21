@@ -1,8 +1,7 @@
-package dev.bendik
+package dev.bendik.interpreter
 
-import dev.bendik.domain.Instruction
-import dev.bendik.domain.ParseResult
-import dev.bendik.domain.Registers
+import dev.bendik.parser.Instruction
+import dev.bendik.parser.ParseResult
 
 data class Process(val registers: Registers,
                    val memory: ByteArray,
