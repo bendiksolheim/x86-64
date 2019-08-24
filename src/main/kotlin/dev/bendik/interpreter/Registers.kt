@@ -53,8 +53,8 @@ fun isRegister(value: String): Boolean =
  * lens.modify(registers) { it + newValue }
  */
 val getRegisterLens: (register: String) -> RegisterLens = { register: String ->
-        val reg = findRegister(register)
-        val regParam = copy.parameters.first { it.name == register }
+    val reg = findRegister(register)
+    val regParam = copy.parameters.first { it.name == register }
 
     RegisterLens(
         { registers -> reg.get(registers) },
