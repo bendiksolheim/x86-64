@@ -85,9 +85,15 @@ private val copy = Registers::class.memberFunctions.first { it.name == "copy" }
 private val instanceParam = copy.instanceParameter!!
 
 @Suppress("UNCHECKED_CAST")
-private fun findRegister(register: String): KProperty1<Registers, Long> =
-    Registers::class.memberProperties
-        .first { it.name == register } as KProperty1<Registers, Long>
+private fun findRegister(registerName: String): KProperty1<Registers, Long> {
+    val memberProperties = Registers::class.memberProperties
+    val register = memberProperties.find { it.name == registerName }
+    if (register != null) {
+        return register as KProperty1<Registers, Long>
+    } else {
+        throw RuntimeException("Unknown register $registerName")
+    }
+}
 
 class RegisterLens (
     val get: (Registers) -> Long,
