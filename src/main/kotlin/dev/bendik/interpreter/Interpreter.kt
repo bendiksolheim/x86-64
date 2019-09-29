@@ -72,7 +72,7 @@ fun push(push: Push, process: Process): Process {
 
 fun pop(pop: Pop, process: Process): Process {
     val value = readMemory(process, process.registers.RSP, 8)
-    val updated = process.registers.copy(RSP = process.registers.RSP + 1)
+    val updated = process.registers.copy(RSP = process.registers.RSP + 8)
     val updated2 = pop.lhs.set(updated, value)
     return process.copy(registers = updated2.copy(RIP = updated2.RIP + 1))
 }
