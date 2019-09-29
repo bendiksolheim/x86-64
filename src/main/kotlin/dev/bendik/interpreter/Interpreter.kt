@@ -2,10 +2,9 @@ package dev.bendik.interpreter
 
 import dev.bendik.parser.*
 
-fun interpret(process: Process): Long {
-    return if (isDone(process)) {
-        process.registers.RAX
-    } else {
+fun interpret(process: Process): Long = when {
+    isDone(process) -> process.registers.RAX
+    else -> {
         val nextProcess = when (val instruction = process.instructions[process.registers.RIP.toInt()]) {
             is Mov -> mov(instruction, process)
             is Add -> add(instruction, process)
