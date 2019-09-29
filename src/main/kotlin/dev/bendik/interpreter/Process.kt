@@ -2,11 +2,13 @@ package dev.bendik.interpreter
 
 import dev.bendik.parser.Instruction
 import dev.bendik.parser.ParseResult
+import java.io.OutputStream
 
 data class Process(val registers: Registers,
                    val memory: ByteArray,
                    val instructions: List<Instruction>,
-                   val labels: Map<String, Long>) {
+                   val labels: Map<String, Long>,
+                   val fileDescriptors: Map<Int, OutputStream>) {
     //Generated
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -38,7 +40,8 @@ fun createProcess(program: ParseResult): Process {
         RIP = program.labels["_main"]!!,
         RSP = memory.count().toLong() - 8 - 1
     )
-    val process = Process(registers, memory, program.instructions, program.labels)
+    val fileDescriptors = mapOf<Int, OutputStream>(1 to System.out)
+    val process = Process(registers, memory, program.instructions, program.labels, fileDescriptors)
     writeMemory(process, registers.RSP, registers.RSP, 8)
 
     return process
