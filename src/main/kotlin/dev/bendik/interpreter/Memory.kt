@@ -13,7 +13,7 @@ fun writeMemory(process: Process, address: Long, value: Long, size: Int): Proces
 fun readMemory(process: Process, address: Long, size: Int): Long {
     val ad = address.toInt()
     val bytes = process.memory.slice(ad..(ad + size))
-    return bytesToLong(bytes.toByteArray())
+    return bytesToLong(bytes.toByteArray(), size)
 }
 
 private fun longToBytes(value: Long): ByteArray {
@@ -27,9 +27,9 @@ private fun longToBytes(value: Long): ByteArray {
     return result
 }
 
-private fun bytesToLong(value: ByteArray): Long {
+private fun bytesToLong(value: ByteArray, size: Int): Long {
     var result = 0L
-    for (i in 0 until 8) {
+    for (i in 0 until size) {
         result = result shl 8
         result = result or (value[i].toLong() and 0xFF)
     }
