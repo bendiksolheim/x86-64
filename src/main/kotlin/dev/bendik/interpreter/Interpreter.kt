@@ -10,6 +10,7 @@ fun interpret(process: Process): Long = when {
             is Add -> add(instruction, process)
             is Sub -> sub(instruction, process)
             is Call -> call(instruction, process)
+            is Syscall -> syscall(process)
             is Ret -> ret(process)
             is Push -> push(instruction, process)
             is Pop -> pop(instruction, process)
@@ -55,6 +56,13 @@ fun call(call: Call, process: Process): Process {
     val updated = process.registers.copy(RSP = process.registers.RSP - 1)
     writeMemory(process, updated.RSP, updated.RIP + 1, 8)
     return process.copy(registers = updated.copy(RIP = process.labels[call.lhs]!!))
+}
+
+fun syscall(process: Process): Process {
+    val number = process.registers.RAX
+    val syscall = getSyscall(number)
+    syscall.invoke(process)
+    return process.copy(registers = process.registers.copy(RIP = process.registers.RIP + 1))
 }
 
 fun ret(process: Process): Process {

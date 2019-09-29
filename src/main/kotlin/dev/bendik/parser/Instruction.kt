@@ -10,6 +10,7 @@ data class Sub(val lhs: RegisterLens, val rhs: Reference): Instruction()
 data class Push(val lhs: Reference): Instruction()
 data class Pop(val lhs: RegisterLens): Instruction()
 data class Call(val lhs: String): Instruction()
+object Syscall: Instruction()
 object Ret : Instruction()
 
 fun parseInstruction(operator: String, operands: List<String>): Instruction =
@@ -29,6 +30,7 @@ fun parseInstruction(operator: String, operands: List<String>): Instruction =
         "PUSH" -> Push(parseReference(operands[0]))
         "POP" -> Pop(getRegisterLens(operands[0]))
         "CALL" -> Call(operands[0])
+        "SYSCALL" -> Syscall
         "RET" -> Ret
         else -> throw RuntimeException("Unknown instruction $operator")
     }
