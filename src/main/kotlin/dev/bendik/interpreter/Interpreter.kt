@@ -64,8 +64,8 @@ fun ret(process: Process): Process {
 }
 
 fun push(push: Push, process: Process): Process {
-    val value = push.lhs.get(process.registers)
-    val updated = process.registers.copy(RSP = process.registers.RSP - 1)
+    val value = interpretValue(process, push.lhs)
+    val updated = process.registers.copy(RSP = process.registers.RSP - 8)
     writeMemory(process, updated.RSP, value, 8)
     return process.copy(registers = updated.copy(RIP = updated.RIP + 1))
 }
